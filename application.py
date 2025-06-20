@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import pickle, numpy as np
-import requests, json, re
+import requests
 
 app = Flask(__name__, static_folder="templates")
 cors = CORS(app)
@@ -123,4 +123,4 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
