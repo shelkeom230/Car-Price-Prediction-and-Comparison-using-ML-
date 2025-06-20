@@ -1,0 +1,171 @@
+{% extends 'base.html'%}
+{% block title %}🚗 AutoSense | predict price 🚗{% endblock %}
+
+<!-- main body  -->
+{% block content %}
+
+  <body class="bg-dark">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="card mt-5" style="width: 100%; height: 100%">
+          <div class="card-header text-center">
+            <h1>Car Price Predictor</h1>
+          </div>
+
+          <div class="card-body">
+            <form action="#" method="POST" accept-charset="utf-8">
+              <div class="row justify-content-center mt-50">
+                <div class="col-md-10 form-group">
+                  <label><b>Select Company:</b></label>
+                  <select
+                    class="form-control selectpicker w-100"
+                    id="company"
+                    name="company"
+                    required="1"
+                    onchange="load_car_model(this.id,'car_models')"
+                  >
+                    {% for company in companies%}
+
+                    <option value="{{company}}">{{company}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="col-md-10 form-group mt-50">
+                  <label for="car_model"><b>Select Model Name:</b></label>
+                  <select
+                    class="form-control selectpicker w-100"
+                    id="car_models"
+                    name="car_models"
+                  ></select>
+                </div>
+
+                <div class="col-md-10 form-group mt-50">
+                  <label for="year"><b>Select Year of Purchase:</b></label>
+                  <select
+                    class="form-control selectpicker w-100"
+                    id="year"
+                    name="year"
+                  >
+                    {% for year in years%}
+
+                    <option value="{{year}}">{{year}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="col-md-10 form-group mt-50">
+                  <label for="fuel_type"><b>Select Fuel Type:</b></label>
+                  <select
+                    class="form-control selectpicker w-100"
+                    id="fuel_type"
+                    name="fuel_type"
+                  >
+                    {% for fuel in fuel_type%}
+
+                    <option value="{{fuel}}">{{fuel}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="col-md-10 form-group mt-50">
+                  <label for="kilo_driven"
+                    ><b>Enter Number of Kilometers Travelled:</b></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="kilo_driven"
+                    name="kilo_driven"
+                    placeholder="Enter no. of kilometers travelled"
+                  />
+                </div>
+
+                <div class="col-md-10 mt-50">
+                  <button
+                    type="submit"
+                    class="btn btn-primary w-100"
+                    onclick="send_data()"
+                  >
+                    Predict Price
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            . <br />
+           <!-- image display   -->
+             <div class="row">
+              <div class="col-12" style="text-align: center">
+               <img src="" alt="">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12" style="text-align: center">
+                <h4><span id="prediction"></span></h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function load_car_model(company_id, car_model_id) {
+          var company = document.getElementById(company_id);
+
+          var car_model = document.getElementById(car_model_id);
+
+          // clear existing data
+          car_model.value="";
+          car_model.innerHTML="";
+
+
+          {% for company in companies %}
+
+          if (company.value == "{{company}}") {
+
+              {% for model in car_models %}
+
+              {% if company in model %}
+
+              var newOption= document.createElement("option");
+                      newOption.value="{{ model }}";
+                      newOption.innerHTML="{{ model }}";
+                      car_model.options.add(newOption);
+
+              {% endif %}
+              {% endfor %}
+          }
+          {% endfor %}
+      }
+
+      function form_handler(event){
+          event.preventDefault();
+      }
+      function send_data(){
+
+          // prevent the default submit behaviour of form
+          document.querySelector('form').addEventListener('submit',form_handler);
+
+          // send and receive the model output and display
+          var fd=new FormData(document.querySelector('form'));
+
+          var xhr=new XMLHttpRequest({mozSystem:true});
+          xhr.open('POST','/predict',true);
+
+          document.getElementById('prediction').innerHTML="Predicting price...";
+
+          xhr.onreadystatechange=function(){
+              if(xhr.readyState==XMLHttpRequest.DONE){
+                  document.getElementById('prediction').innerHTML="Predicted Price: ₹ "+xhr.responseText;
+              }
+          };
+
+          xhr.onload=function(){};
+
+          xhr.send(fd);
+      }
+    </script>
+
+{% endblock %}

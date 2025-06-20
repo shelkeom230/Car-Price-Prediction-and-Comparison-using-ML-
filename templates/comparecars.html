@@ -1,0 +1,149 @@
+{% extends 'base.html' %} {% block title %}🚗 AutoSense | compare cars 🚗{% endblock %} {% block
+content %}
+
+<div class="container">
+  <h2 class="mb-4 text-center">Compare Cars</h2>
+  <div class="row g-4">
+    <form id="compareForm" method="POST" enctype="multipart/form-data">
+      <div class="container">
+        <div class="row g-4">
+          <!-- Car 1 -->
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-header bg-primary text-white">Car 1</div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label">Brand</label>
+                  <input
+                    type="text"
+                    name="car1_brand"
+                    class="form-control"
+                    placeholder="e.g., BMW"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Model</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="e.g., X5"
+                    name="car1_model"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Year</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g., 2020"
+                    name="car1_year"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Fuel Type</label>
+                  <select class="form-select" name="car1_fuel">
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>CNG</option>
+                    <option>Electric</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Car 2 -->
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-header bg-success text-white">Car 2</div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label class="form-label">Brand</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="e.g., Audi"
+                    name="car2_brand"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Model</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="e.g., Q7"
+                    name="car2_model"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Year</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g., 2021"
+                    name="car2_year"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Fuel Type</label>
+                  <select class="form-select" name="car2_fuel">
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>CNG</option>
+                    <option>Electric</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ Compare Button inside the form -->
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-dark px-5">Compare</button>
+        </div>
+      </div>
+    </form>
+    
+    <!-- show info in para  -->
+    <div class="mt-5" id="result-section" style="display: none;">
+  <h4 class="mb-4">Comparison Result</h4>
+  <div class="card shadow-sm p-4 bg-light">
+    <p id="car-comparison-text" class="fs-5" style="white-space: pre-line; line-height: 1.7;"></p>
+  </div>
+</div>
+
+<!-- script to display result in p  -->
+    <script>
+  document
+    .querySelector("#compareForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      fetch("/compare", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === "success") {
+            // Show result section and insert the paragraph
+            document.getElementById("result-section").style.display = "block";
+            document.getElementById("car-comparison-text").textContent = res.data;
+          } else {
+            alert("Something went wrong: " + res.message);
+          }
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          alert("Request failed");
+        });
+  });
+</script>
+
+
+    {% endblock %}
+  </div>
+</div>
